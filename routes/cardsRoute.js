@@ -25,23 +25,34 @@ router.post('/create', (request, response) => {
         expyear: request.body.expyear,
         country: request.body.country,
         userId: request.body.userId,
-        verified: "true"
+        verified: "true",
+        status: "active"
     }
     let userLoginResponse = {};
     cards.findOne({ number: card.number }, (error, result) => {
         if (error || result === null) {
-            let data = new cards(card);
-            data.save((error, result) => {
-                if (error) {
+
+            cards.remove({ userId: request.body.userId }).then(function (err, obj) {
+                if (err) {
                     userLoginResponse.error = true;
-                    userLoginResponse.message = "Can not link the card";
-                    response.status(500).json(userLoginResponse);
-                } else {
-                    userLoginResponse.error = false;
-                    userLoginResponse.message = "This card has been linked successfully";
+                    userLoginResponse.message = "Can not delete the old card";
                     response.status(200).json(userLoginResponse);
+                } else {
+                    let data = new cards(card);
+                    data.save((error, result) => {
+                        if (error) {
+                            userLoginResponse.error = true;
+                            userLoginResponse.message = "Can not link the card";
+                            response.status(500).json(userLoginResponse);
+                        } else {
+                            userLoginResponse.error = false;
+                            userLoginResponse.message = "This card has been linked successfully";
+                            response.status(200).json(userLoginResponse);
+                        }
+                    });
                 }
-            });
+            })
+
         }
         else {
             userLoginResponse.error = true;
