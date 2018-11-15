@@ -29,9 +29,24 @@ router.post('/create', (request, response) => {
         status: "active"
     }
     let userLoginResponse = {};
-    cards.findOne({ number: card.number }, (error, result) => {
+    cards.findOne({ userId: request.body.userId }, (error, result) => {
         if (error || result === null) {
 
+            let data = new cards(card);
+            data.save((error, result) => {
+                if (error) {
+                    userLoginResponse.error = true;
+                    userLoginResponse.message = "Can not link the card";
+                    response.status(500).json(userLoginResponse);
+                } else {
+                    userLoginResponse.error = false;
+                    userLoginResponse.message = "This card has been linked successfully";
+                    response.status(200).json(userLoginResponse);
+                }
+            });
+
+        }
+        else {
             cards.remove({ userId: request.body.userId }).then(function (err, obj) {
                 if (err) {
                     userLoginResponse.error = true;
@@ -52,12 +67,6 @@ router.post('/create', (request, response) => {
                     });
                 }
             })
-
-        }
-        else {
-            userLoginResponse.error = true;
-            userLoginResponse.message = "This card is already linked with a account";
-            response.status(500).json(userLoginResponse);
         }
     });
 });
