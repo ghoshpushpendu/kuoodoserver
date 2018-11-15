@@ -8,6 +8,9 @@ const cards = mongoose.Schema({
     number: {
         type: String
     },
+    cvv: {
+        type: String
+    },
     expmonth: {
         type: String
     },
