@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
+    "authorizenet": "^1.0.6",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "cryptr": "^2.0.0",
