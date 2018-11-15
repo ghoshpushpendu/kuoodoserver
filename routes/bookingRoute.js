@@ -421,6 +421,25 @@ var returnRouter = function (io) {
 
     });
 
+    router.get('/getpending', (request, response) => {
+        let userID = request.query.userId;
+        let userDetailsResponse = {};
+        booking.find({ userId: userId, payment: 'pending' }, (error, result) => {
+            if (error) {
+                userDetailsResponse.error = true;
+                userDetailsResponse.message = `Error :` + error.message;
+                response.status(500).json(userDetailsResponse);
+            }
+            else if (result) {
+                userDetailsResponse.error = false;
+                userDetailsResponse.result = result;
+                userDetailsResponse.message = `Driver booking list.`;
+                response.status(200).json(userDetailsResponse);
+            }
+        });
+
+    });
+
     return router;
 }
 
