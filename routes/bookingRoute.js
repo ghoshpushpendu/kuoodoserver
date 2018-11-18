@@ -433,7 +433,7 @@ var returnRouter = function (io) {
             else if (result) {
                 userDetailsResponse.error = false;
                 userDetailsResponse.result = result;
-                userDetailsResponse.message = `Driver booking list.`;
+                userDetailsResponse.message = `Pending payments `;
                 response.status(200).json(userDetailsResponse);
             }
         });
