@@ -79,11 +79,11 @@ router.post('/delete', (req, res) => {
         if (err) {
             userLoginResponse.error = true;
             userLoginResponse.message = "Can not delete card";
-            response.status(200).json(userLoginResponse);
+            res.status(200).json(userLoginResponse);
         } else {
             userLoginResponse.error = true;
             userLoginResponse.message = "This card has been deleted";
-            response.status(200).json(userLoginResponse);
+            res.status(200).json(userLoginResponse);
         }
     })
 });
