@@ -77,6 +77,7 @@ router.post('/delete', (req, res) => {
     let userLoginResponse = {};
     cards.remove({ number: number }).then(function (err, obj) {
         if (err) {
+            console.log(err);
             userLoginResponse.error = true;
             userLoginResponse.message = "Can not delete card";
             res.status(200).json(userLoginResponse);
