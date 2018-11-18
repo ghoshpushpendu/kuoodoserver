@@ -424,7 +424,7 @@ var returnRouter = function (io) {
     router.get('/getpending', (request, response) => {
         let userID = request.query.userId;
         let userDetailsResponse = {};
-        booking.find({ userId: userId, payment: 'pending' }, (error, result) => {
+        booking.find({ userId: userID, payment: 'pending' }, (error, result) => {
             if (error) {
                 userDetailsResponse.error = true;
                 userDetailsResponse.message = `Error :` + error.message;
