@@ -30,6 +30,10 @@ router.post('/create', (request, response) => {
     }
     let userLoginResponse = {};
     cards.findOne({ userId: request.body.userId }, (error, result) => {
+
+        console.log(error);
+        console.log(result);
+
         if (error || result === null) {
 
             let data = new cards(card);
