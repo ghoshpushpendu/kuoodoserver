@@ -34,7 +34,9 @@ router.post('/create', (request, response) => {
         console.log(error);
         console.log(result);
 
-        if (error || result === null) {
+        if (error || result == null) {
+
+            console.log("Here");
 
             let data = new cards(card);
             data.save((error, result) => {
@@ -51,6 +53,8 @@ router.post('/create', (request, response) => {
 
         }
         else {
+
+            console.log("There");
             // cards.remove({ userId: request.body.userId }).then(function (err, obj) {
             // if (err) {
             //     userLoginResponse.error = true;
