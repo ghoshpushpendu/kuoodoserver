@@ -56,26 +56,18 @@ router.post('/create', (request, response) => {
 
             console.log("There");
             cards.remove({ userId: request.body.userId }, true).then(function (err, obj) {
-                console.log("error on remove", err);
-                console.log("result on remove", obj);
-                if (err) {
-                    userLoginResponse.error = true;
-                    userLoginResponse.message = "Can not delete the old card";
-                    response.status(200).json(userLoginResponse);
-                } else {
-                    let data = new cards(card);
-                    data.save((error, result) => {
-                        if (error) {
-                            userLoginResponse.error = true;
-                            userLoginResponse.message = "Can not link the card";
-                            response.status(500).json(userLoginResponse);
-                        } else {
-                            userLoginResponse.error = false;
-                            userLoginResponse.message = "This card has been linked successfully";
-                            response.status(200).json(userLoginResponse);
-                        }
-                    });
-                }
+                let data = new cards(card);
+                data.save((error, result) => {
+                    if (error) {
+                        userLoginResponse.error = true;
+                        userLoginResponse.message = "Can not link the card";
+                        response.status(500).json(userLoginResponse);
+                    } else {
+                        userLoginResponse.error = false;
+                        userLoginResponse.message = "This card has been linked successfully";
+                        response.status(200).json(userLoginResponse);
+                    }
+                });
             })
         }
     });
