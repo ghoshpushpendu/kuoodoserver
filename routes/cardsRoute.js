@@ -224,7 +224,7 @@ router.post('/charge', (request, response) => {
                         var presponse = new ApiContracts.CreateTransactionResponse(apiResponse);
 
                         //pretty print response
-                        console.log(JSON.stringify(response, null, 2));
+                        console.log(response);
 
                         if (presponse != null) {
                             if (presponse.getMessages().getResultCode() == ApiContracts.MessageTypeEnum.OK) {
