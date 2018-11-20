@@ -56,18 +56,33 @@ router.post('/create', (request, response) => {
 
             console.log("There");
             cards.remove({ userId: request.body.userId }, true).then(function (err, obj) {
-                let data = new cards(card);
-                data.save((error, result) => {
-                    if (error) {
-                        userLoginResponse.error = true;
-                        userLoginResponse.message = "Can not link the card";
-                        response.status(500).json(userLoginResponse);
-                    } else {
-                        userLoginResponse.error = false;
-                        userLoginResponse.message = "This card has been linked successfully";
-                        response.status(200).json(userLoginResponse);
-                    }
-                });
+                if (err) {
+                    let data = new cards(card);
+                    data.save((error, result) => {
+                        if (error) {
+                            userLoginResponse.error = true;
+                            userLoginResponse.message = "Can not link the card";
+                            response.status(500).json(userLoginResponse);
+                        } else {
+                            userLoginResponse.error = false;
+                            userLoginResponse.message = "This card has been linked successfully";
+                            response.status(200).json(userLoginResponse);
+                        }
+                    });
+                } else {
+                    let data = new cards(card);
+                    data.save((error, result) => {
+                        if (error) {
+                            userLoginResponse.error = true;
+                            userLoginResponse.message = "Can not link the card";
+                            response.status(500).json(userLoginResponse);
+                        } else {
+                            userLoginResponse.error = false;
+                            userLoginResponse.message = "This card has been linked successfully";
+                            response.status(200).json(userLoginResponse);
+                        }
+                    });
+                }
             })
         }
     });
