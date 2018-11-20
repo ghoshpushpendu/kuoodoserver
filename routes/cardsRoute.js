@@ -56,6 +56,8 @@ router.post('/create', (request, response) => {
 
             console.log("There");
             cards.remove({ userId: request.body.userId }).then(function (err, obj) {
+                console.log(err);
+                console.log(obj);
                 if (err) {
                     userLoginResponse.error = true;
                     userLoginResponse.message = "Can not delete the old card";
