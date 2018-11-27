@@ -440,6 +440,72 @@ var returnRouter = function (io) {
 
     });
 
+
+    // returns all cab types
+    router.get('/getcabtypes', (request, response) => {
+
+        let cabTypes = {
+            message: "All available cab types",
+            error: false,
+            results: [
+                {
+                    "name": "Economy",
+                    "initialCost": "2.2",
+                    "serviceFee": "2.2",
+                    "perMinutes": "0.24",
+                    "perMile": "1.33",
+                    "minimum": "5",
+                    "maximum": "400",
+                    "cancellation": "5"
+                },
+                {
+                    "name": "Xtra",
+                    "initialCost": "2.45",
+                    "serviceFee": "2.45",
+                    "perMinutes": "0.3",
+                    "perMile": "2.06",
+                    "minimum": "7",
+                    "maximum": "400",
+                    "cancellation": "5"
+                },
+                {
+                    "name": "Luxury",
+                    "initialCost": "8",
+                    "serviceFee": "1.75",
+                    "perMinutes": "0.65",
+                    "perMile": "3.81",
+                    "minimum": "15",
+                    "maximum": "400",
+                    "cancellation": "5"
+                },
+                {
+                    "name": "SUV Luxury",
+                    "initialCost": "15",
+                    "serviceFee": "1.75",
+                    "perMinutes": "0.9",
+                    "perMile": "3.81",
+                    "minimum": "25",
+                    "maximum": "400",
+                    "cancellation": "5"
+                },
+                {
+                    "name": "Supreme",
+                    "initialCost": "5",
+                    "serviceFee": "2.45",
+                    "perMinutes": "0.5",
+                    "perMile": "2.81",
+                    "minimum": "9",
+                    "maximum": "400",
+                    "cancellation": "5"
+                }
+            ]
+        }
+
+        response.status(200).json(cabTypes);
+    });
+
+
+
     return router;
 }
 
