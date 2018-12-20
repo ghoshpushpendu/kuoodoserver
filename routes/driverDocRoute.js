@@ -3,7 +3,7 @@ const router = express.Router();
 const docs = require('../models/driverDocument');
 const user = require('../models/user');
 
-router.put('/updateDriverDocs', (request, response) => {
+router.post('/updateDriverDocs', (request, response) => {
     console.log(request.body);
 
 
