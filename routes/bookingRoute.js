@@ -407,6 +407,7 @@ var returnRouter = function (io) {
         let userDetailsResponse = {};
         booking.find({ driverId: driverId }, (error, result) => {
 
+            
             console.log(error);
             console.log(result);
 

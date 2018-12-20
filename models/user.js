@@ -34,7 +34,6 @@ const userSchema = mongoose.Schema({
         type: String
     },
     address: {
-
         address: String,
         country: String,
         zipCode: Number
@@ -77,6 +76,27 @@ const userSchema = mongoose.Schema({
     availability: {
         type: String,
         enum: ['Online', 'Offline', 'Busy',]
+    },
+    drivingLicense: {
+        type: String
+    },
+    vehicleInsurance: {
+        type: String
+    },
+    vechileRegistration: {
+        type: String
+    },
+    vehiclePermit: {
+        type: String
+    },
+    carName: {
+        type: String
+    },
+    carNumber: {
+        type: String
+    },
+    carType: {
+        type: String
     },
     createdDate: {
         type: Date,
