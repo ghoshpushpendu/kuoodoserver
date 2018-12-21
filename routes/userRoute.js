@@ -143,6 +143,9 @@ var returnRouter = function (io) {
             role: request.body.role,
             firstName: request.body.firstName,
             lastName: request.body.lastName,
+            carName: request.body.carName,
+            carNumber: request.body.carNumber,
+            carType: request.body.carType,
             address: {
                 address: request.body.address ? (request.body.address.address) : null,
                 country: request.body.country ? (request.body.address.country) : null,
