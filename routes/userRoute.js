@@ -107,7 +107,6 @@ var returnRouter = function (io) {
                                 sendOtpResponse.registered = false;
                                 sendOtpResponse.message = `OTP has been sent .`;
                                 response.status(200).json(sendOtpResponse);
-
                             }
                         });
 
