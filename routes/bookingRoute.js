@@ -56,7 +56,8 @@ var returnRouter = function (io) {
                     $maxDistance: 3000
                 },
                 status: "Activated",
-                availability: "Online"
+                availability: "Online",
+                carType: request.body.carType
             }
         ).limit(1).exec(function (error, driver) {
             if (error) {
@@ -407,7 +408,7 @@ var returnRouter = function (io) {
         let userDetailsResponse = {};
         booking.find({ driverId: driverId }, (error, result) => {
 
-            
+
             console.log(error);
             console.log(result);
 
