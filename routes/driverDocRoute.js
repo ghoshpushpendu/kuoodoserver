@@ -13,9 +13,6 @@ router.post('/updateDriverDocs', (request, response) => {
         vehicleInsurance: request.body.vehicleInsurance,
         vechileRegistration: request.body.vechileRegistration,
         vehiclePermit: request.body.vehiclePermit,
-        carName: request.body.carName,
-        carNumber: request.body.carNumber,
-        carType: request.body.carType
     });
 
     let documentResponse = {};
