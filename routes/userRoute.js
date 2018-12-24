@@ -17,6 +17,8 @@ const file = require('../models/driverDocument');
 const Image = require('../models/upload');
 var multer = require('multer');
 var upload = multer({ dest: 'fileUpload/' });
+const cards = require('../models/cards');
+
 // var plivo = require('plivo');
 
 
