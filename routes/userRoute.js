@@ -277,10 +277,21 @@ var returnRouter = function (io) {
                 response.status(500).json(userDetailsResponse);
             }
             else if (result) {
-                userDetailsResponse.error = false;
-                userDetailsResponse.user = result;
-                userDetailsResponse.message = ` user details.`;
-                response.status(200).json(userDetailsResponse);
+
+                cards.find({ userId: request.query._id }, (err, rslt) => {
+                    if (err) {
+                        userDetailsResponse.error = false;
+                        userDetailsResponse.user = result;
+                        userDetailsResponse.message = ` user details.`;
+                        response.status(200).json(userDetailsResponse);
+                    } else if (rslt) {
+                        userDetailsResponse.error = false;
+                        userDetailsResponse.user = result;
+                        userDetailsResponse.card = rslt;
+                        userDetailsResponse.message = ` user details.`;
+                        response.status(200).json(userDetailsResponse);
+                    }
+                });
             }
         });
     });
