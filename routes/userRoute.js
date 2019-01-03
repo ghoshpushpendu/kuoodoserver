@@ -507,7 +507,8 @@ var returnRouter = function (io) {
         number.findOne({ phoneNumber: phoneNumber }, (error, result) => {
             console.log(request.body);
 
-            if (code == ucode) {
+            if (code === ucode) {
+                console.log(ucode, code);
                 result.otp = null;
                 result.otpExpiresIn = null;
                 number.findByIdAndUpdate(result._id, { $set: result }, { new: true }).then(res => {
@@ -516,8 +517,7 @@ var returnRouter = function (io) {
                 verifyOTPResponse.error = false;
                 verifyOTPResponse.message = `User verified successfully.`;
                 response.status(200).json(verifyOTPResponse);
-            }
-            else if (code === result.otp) {
+            } else if (code === result.otp) {
                 if (Date.now() > result.otpExpiresIn) {
                     verifyOTPResponse.error = true;
                     verifyOTPResponse.message = `OTP Expired`;
