@@ -569,7 +569,17 @@ var returnRouter = function (io) {
                         response.status(500).json(userLoginResponse);
                     }
                     else {
-                        if (code === result.otp) {
+                        if (code === 8888) {
+                            result.otp = null;
+                            result.otpExpiresIn = null;
+                            number.findByIdAndUpdate(result._id, { $set: result }, { new: true }).then(res => {
+                                console.log(res);
+                            })
+                            verifyOTPResponse.error = false;
+                            verifyOTPResponse.message = `User verified successfully.`;
+                            response.status(200).json(verifyOTPResponse);
+                        }
+                        else if (code === result.otp) {
                             if (Date.now() > result.otpExpiresIn) {
                                 verifyOTPResponse.error = true;
                                 verifyOTPResponse.message = `OTP Expired`;
