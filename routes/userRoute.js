@@ -507,6 +507,10 @@ var returnRouter = function (io) {
         number.findOne({ phoneNumber: phoneNumber }, (error, result) => {
             console.log(request.body);
 
+            console.log(code);
+            console.log(ucode);
+            console.log(code === ucode);
+
             if (code === ucode) {
                 console.log(ucode, code);
                 result.otp = null;
