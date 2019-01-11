@@ -155,23 +155,24 @@ router.post('/charge', (request, response) => {
                 if (err)
                     console.log(err);
                 else
-                    let data = {
-                        payment: "Paid"
-                    }
-                booking.findOneAndUpdate({ _id: bookingID }, { $set: data }, { new: true }, function (error, result) {
-                    if (error || result === null) {
-                        chargeResponse.error = true;
-                        chargeResponse.message = `Error :` + error.message;
-                        response.status(500).json(chargeResponse);
-                    }
-                    else {
-                        chargeResponse.error = false;
-                        chargeResponse.booking = result;
-                        chargeResponse.message = `Payment success`;
-                        response.status(200).json(chargeResponse);
-                    }
+                    booking.findOneAndUpdate({ _id: bookingID }, {
+                        $set: {
+                            payment: "Paid"
+                        }
+                    }, { new: true }, function (error, result) {
+                        if (error || result === null) {
+                            chargeResponse.error = true;
+                            chargeResponse.message = `Error :` + error.message;
+                            response.status(500).json(chargeResponse);
+                        }
+                        else {
+                            chargeResponse.error = false;
+                            chargeResponse.booking = result;
+                            chargeResponse.message = `Payment success`;
+                            response.status(200).json(chargeResponse);
+                        }
 
-                });
+                    });
 
             })
 
