@@ -131,7 +131,7 @@ router.post('/charge', (request, response) => {
 
     let userID = request.body.userId;
 
-    booking.findOne({ userId: userID, payment: 'Pending' }, (error, result) => {
+    booking.findOne({ userId: userID, payment: 'pending' }, (error, result) => {
         console.log(error);
         console.log(result);
         if (error || result === null) {
