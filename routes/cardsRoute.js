@@ -149,7 +149,7 @@ router.post('/charge', (request, response) => {
 
             var stripetoken = request.body.token;
             var charge = stripe.charges.create({
-                amount: parseInt(amount),
+                amount: parseInt(amount) * 100,
                 currency: 'usd',
                 description: 'Sample transaction',
                 source: stripetoken
