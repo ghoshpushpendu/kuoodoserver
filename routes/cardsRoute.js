@@ -147,14 +147,18 @@ router.post('/charge', (request, response) => {
 
             var stripetoken = request.body.token;
             var charge = stripe.charges.create({
-                amount: amount,
+                amount: parseInt(amount),
                 currency: 'usd',
                 description: 'Sample transaction',
                 source: stripetoken
             }, function (err, charge) {
-                if (err)
+                if (err) {
                     console.log(err);
-                else
+                    chargeResponse.error = true;
+                    chargeResponse.message = `Error in payment`;
+                    response.status(500).json(chargeResponse);
+                }
+                else {
                     booking.findOneAndUpdate({ _id: bookingID }, {
                         $set: {
                             payment: "Paid"
@@ -173,6 +177,7 @@ router.post('/charge', (request, response) => {
                         }
 
                     });
+                }
 
             })
 
