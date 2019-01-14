@@ -40,6 +40,7 @@ var returnRouter = function (io) {
             distance: request.body.distance,
             code: parseInt(Math.random() * 100000),
             status: "request",
+            amount: request.body.amount
         });
 
         var maxDistance = request.query.distance || 8;
@@ -346,7 +347,7 @@ var returnRouter = function (io) {
                 console.log(result.userId);
                 let socketID = result.userId.socketId;
                 result.status = "complete";
-                result.payment = "pending";
+                result.payment = "Pending";
                 result.driverId.availability = "Online";
                 result.userId.availability = "Online";
                 result.endTime = new Date();
@@ -430,7 +431,7 @@ var returnRouter = function (io) {
     router.get('/getpending', (request, response) => {
         let userID = request.query.userId;
         let userDetailsResponse = {};
-        booking.find({ userId: userID, payment: 'pending' }, (error, result) => {
+        booking.find({ userId: userID, payment: 'Pending' }, (error, result) => {
             if (error) {
                 userDetailsResponse.error = true;
                 userDetailsResponse.message = `Error :` + error.message;
