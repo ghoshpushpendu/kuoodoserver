@@ -141,12 +141,11 @@ router.post('/charge', (request, response) => {
         }
         else {
 
-            console.log("Taka", amount);
-            console.log("Gota taka", parseInt(amount));
-
             let amount = result.amount;
             let bookingID = result._id;
 
+            console.log("Taka", amount);
+            console.log("Gota taka", parseInt(amount));
 
             var stripetoken = request.body.token;
             var charge = stripe.charges.create({
