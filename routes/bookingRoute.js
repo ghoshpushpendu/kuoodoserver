@@ -451,7 +451,7 @@ var returnRouter = function (io) {
     router.get('/getcurrentride', (request, response) => {
         let userID = request.query.userId;
         let userDetailsResponse = {};   //commute,booked
-        booking.find({ userId: userID, $or: [{ status: "commute" }, { status: "booked" }] }, (error, result) => {
+        booking.find({ $and: [{ userId: userID }, { $or: [{ status: "commute" }, { status: "booked" }] }] }, (error, result) => {
             if (error) {
                 console.log("error fetching current error", error);
                 userDetailsResponse.error = true;
