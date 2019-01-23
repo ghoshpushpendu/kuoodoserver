@@ -440,7 +440,7 @@ var returnRouter = function (io) {
             else if (result) {
                 userDetailsResponse.error = false;
                 userDetailsResponse.result = result;
-                userDetailsResponse.message = `Current rides `;
+                userDetailsResponse.message = `Pending payments`;
                 response.status(200).json(userDetailsResponse);
             }
         });
@@ -462,7 +462,7 @@ var returnRouter = function (io) {
                 console.log("fetching current result", result);
                 userDetailsResponse.error = false;
                 userDetailsResponse.result = result;
-                userDetailsResponse.message = `Pending payments `;
+                userDetailsResponse.message = `Current ride`;
                 response.status(200).json(userDetailsResponse);
             }
         });
