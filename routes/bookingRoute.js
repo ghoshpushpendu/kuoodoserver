@@ -447,6 +447,28 @@ var returnRouter = function (io) {
 
     });
 
+    // get current ride
+    router.get('/getcurrentride', (request, response) => {
+        let userID = request.query.userId;
+        let userDetailsResponse = {};   //commute,booked
+        db.inventory.find({ $or: [{ quantity: { $lt: 20 } }, { price: 10 }] })
+        booking.find({ userId: userID }, { $or: [{ status: "commute" }, { status: "booked" }] }, (error, result) => {
+            if (error) {
+                console.log("error fetching current error", error);
+                userDetailsResponse.error = true;
+                userDetailsResponse.message = `Error :` + error.message;
+                response.status(500).json(userDetailsResponse);
+            }
+            else if (result) {
+                console.log("fetching current result", result);
+                userDetailsResponse.error = false;
+                userDetailsResponse.result = result;
+                userDetailsResponse.message = `Pending payments `;
+                response.status(200).json(userDetailsResponse);
+            }
+        });
+
+    });
 
     // returns all cab types
     router.get('/getcabtypes', (request, response) => {
