@@ -49,7 +49,7 @@ const bookingSchema = mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['booked', 'request', 'commute', 'complete', 'cancelled']
+        enum: ['Booked', 'Requested', 'Commute', 'Completed', 'Cancelled', 'Arrived']
     },
     createdDate: {
         type: Date,
