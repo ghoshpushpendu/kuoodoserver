@@ -39,7 +39,7 @@ var returnRouter = function (io) {
             endLocation: request.body.startLocation,
             distance: request.body.distance,
             code: parseInt(Math.random() * 100000),
-            status: "request",
+            status: "Requested",
             amount: request.body.amount
         });
 
@@ -141,7 +141,7 @@ var returnRouter = function (io) {
                 let userID = result.userId._id;
                 let driverID = result.driverId._id;
 
-                result.status = "booked";
+                result.status = "Booked";
                 result.userId.availability = "Busy";
                 result.driverId.availability = "Busy";
 
@@ -193,7 +193,7 @@ var returnRouter = function (io) {
             else {
 
                 console.log(result.userId);
-                result.status = "cancelled";
+                result.status = "Cancelled";
                 result.driverId.availability = "Online";
                 let socketID = result.userId.socketId;
 
@@ -240,15 +240,30 @@ var returnRouter = function (io) {
             }
             else {
 
+                console.log(result.userId);
+                result.status = "Arrived";
+                result.driverId.availability = "Online";
                 let socketID = result.userId.socketId;
 
-                console.log("Ride cancelled socket message")
-                io.to(socketID).emit('arrived', result);
+                result.save((error, result) => {
+                    console.log(error);
+                    console.log(result);
+                    if (error) {
 
-                userDetailsResponse.error = false;
-                userDetailsResponse.user = result;
-                userDetailsResponse.message = `Users details.`;
-                response.status(200).json(userDetailsResponse);
+                        userDetailsResponse.error = false;
+                        userDetailsResponse.message = `Error:` + error.messsage;
+                        response.status(400).json(userDetailsResponse);
+                    }
+                    else {
+
+                        io.to(socketID).emit('arrived', result);
+
+                        userDetailsResponse.error = false;
+                        userDetailsResponse.user = result;
+                        userDetailsResponse.message = `Users details.`;
+                        response.status(200).json(userDetailsResponse);
+                    }
+                });
 
             }
 
@@ -298,7 +313,7 @@ var returnRouter = function (io) {
                 let socketID = result.userId.socketId;
                 if (result.code == code) {
                     // code matches    
-                    result.status = "commute";
+                    result.status = "Commute";
                     result.startTime = new Date();
                     result.save((error, result) => {
                         console.log(error);
@@ -346,7 +361,7 @@ var returnRouter = function (io) {
             else {
                 console.log(result.userId);
                 let socketID = result.userId.socketId;
-                result.status = "complete";
+                result.status = "Completed";
                 result.payment = "Pending";
                 result.driverId.availability = "Online";
                 result.userId.availability = "Online";
@@ -451,7 +466,7 @@ var returnRouter = function (io) {
     router.get('/getcurrentride', (request, response) => {
         let userID = request.query.userId;
         let userDetailsResponse = {};   //commute,booked
-        booking.find({ $and: [{ userId: userID }, { $or: [{ status: "commute" }, { status: "booked" }] }] }, (error, result) => {
+        booking.find({ $and: [{ userId: userID }, { $or: [{ status: "Commute" }, { status: "Booked" }, { status: "Requested" }, { status: "Arrived" }] }] }, (error, result) => {
             if (error) {
                 console.log("error fetching current error", error);
                 userDetailsResponse.error = true;
