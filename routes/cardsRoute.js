@@ -10,7 +10,7 @@ const cards = require('../models/cards');
 const ApiContracts = require('authorizenet').APIContracts;
 const ApiControllers = require('authorizenet').APIControllers;
 const SDKConstants = require('authorizenet').Constants;
-var stripe = require('stripe')('sk_test_1XB11pRjsxdya3EYUTD1vmI8');
+var stripe = require('stripe')('sk_live_UA142Rbn7hi3tItP8zW41ZfO');
 
 
 
