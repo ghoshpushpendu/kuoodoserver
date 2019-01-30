@@ -20,7 +20,7 @@ router.post('/create', (request, response) => {
     let card = {
         number: request.body.number,
         name: request.body.name,
-        cvv: request.body.cvv,
+        // cvv: request.body.cvv,
         expmonth: request.body.expmonth,
         expyear: request.body.expyear,
         country: request.body.country,
