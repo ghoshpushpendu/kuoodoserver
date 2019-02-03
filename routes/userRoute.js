@@ -326,7 +326,7 @@ var returnRouter = function (io) {
                 if (result.password == password && result.role == role) {
                     var data = { deviceId: request.body.deviceId };
                     if (request.body.deviceId) {
-                        result.update({ $set: data }, (error, result) => {
+                        result.update({ $set: data }, (error, success) => {
                             if (error) {
                                 userLoginResponse.error = true;
                                 userLoginResponse.message = "User does not exist";
