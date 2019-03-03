@@ -789,7 +789,7 @@ var returnRouter = function (io) {
     });
 
     /** Get all pending driver requests Drivers **/
-    router.get('/pendingdrivers', (request, response) => {
+    router.get('/pendingdrivers', (request, res) => {
         var pageNo = parseInt(request.query.pageNo)
         var size = parseInt(request.query.size)
         var query = {}
@@ -814,7 +814,7 @@ var returnRouter = function (io) {
     })
 
     /** get drivers **/
-    router.get('/drivers', (request, response) => {
+    router.get('/drivers', (request, res) => {
         var pageNo = parseInt(request.query.pageNo)
         var size = parseInt(request.query.size)
         var query = {}
