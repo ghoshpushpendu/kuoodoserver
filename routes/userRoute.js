@@ -170,7 +170,7 @@ var returnRouter = function (io) {
             otherwise the status will be blanked
         */
         if (request.body.role == "Driver") {
-            data.status = "Activated"
+            data.status = "Pending"  //Activated
             data.availability = "Offline"
         }
         else {
@@ -191,7 +191,7 @@ var returnRouter = function (io) {
             } else {
                 registrationResponse.error = false;
                 registrationResponse.user = result;
-                registrationResponse.message = `registration is  successfull.`;
+                registrationResponse.message = `registration is successfull.`;
                 response.status(200).json(registrationResponse);
             }
         });
@@ -788,6 +788,54 @@ var returnRouter = function (io) {
         });
     });
 
+    /** Get all pending driver requests Drivers **/
+    router.get('/pendingdrivers', (request, response) => {
+        var pageNo = parseInt(request.query.pageNo)
+        var size = parseInt(request.query.size)
+        var query = {}
+        if (pageNo < 0 || pageNo === 0) {
+            response = { "error": true, "message": "invalid page number, should start with 1" };
+            return res.json(response)
+        }
+        query.skip = size * (pageNo - 1)
+        query.limit = size;
+        query.role = 'Driver';
+        query.status = "Pending";
+        // Find some documents
+        user.find(query, function (err, data) {
+            // Mongo command to fetch all data from collection.
+            if (err) {
+                response = { "error": true, "message": "Error fetching data" };
+            } else {
+                response = { "error": false, "message": data };
+            }
+            res.json(response);
+        });
+    })
+
+    /** get drivers **/
+    router.get('/drivers', (request, response) => {
+        var pageNo = parseInt(request.query.pageNo)
+        var size = parseInt(request.query.size)
+        var query = {}
+        if (pageNo < 0 || pageNo === 0) {
+            response = { "error": true, "message": "invalid page number, should start with 1" };
+            return res.json(response)
+        }
+        query.skip = size * (pageNo - 1)
+        query.limit = size;
+        query.role = 'Driver';
+        // Find some documents
+        user.find(query, function (err, data) {
+            // Mongo command to fetch all data from collection.
+            if (err) {
+                response = { "error": true, "message": "Error fetching data" };
+            } else {
+                response = { "error": false, "message": data };
+            }
+            res.json(response);
+        });
+    });
     /* 
        Api to update the driver/sriders avaliability
     */

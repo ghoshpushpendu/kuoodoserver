@@ -19,7 +19,7 @@ var io = require('socket.io')(server, { origins: '*:*' });
 const userRoute = require('./routes/userRoute')(io);
 const docsRoute = require('./routes/driverDocRoute');
 const bookingRoute = require('./routes/bookingRoute')(io);
-const cardsRoute = require('./routes/cardsRoute');
+const cardsRoute = require('./routes/cardsRoute')(io);
 
 const helper = require('./routes/helper');
 //connect to mongodb
