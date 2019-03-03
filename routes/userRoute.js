@@ -799,11 +799,10 @@ var returnRouter = function (io) {
         }
         query.skip = size * (pageNo - 1)
         query.limit = size;
-        query.role = 'Driver';
-        query.status = "Pending";
         // Find some documents
-        user.find(query, function (err, data) {
+        user.find({ role: 'Driver', status: 'Pending' }, {}, query, function (err, data) {
             // Mongo command to fetch all data from collection.
+            console.log(err);
             if (err) {
                 response = { "error": true, "message": "Error fetching data" };
             } else {
