@@ -11,7 +11,9 @@ const ApiContracts = require('authorizenet').APIContracts;
 const ApiControllers = require('authorizenet').APIControllers;
 const SDKConstants = require('authorizenet').Constants;
 var stripe = require('stripe')('sk_live_UA142Rbn7hi3tItP8zW41ZfO');
-
+var ApiContracts = require('authorizenet').APIContracts;
+var ApiControllers = require('authorizenet').APIControllers;
+var SDKConstants = require('authorizenet').Constants;
 
 
 // create card
@@ -125,6 +127,74 @@ router.post('/list', (request, response) => {
     });
 });
 
+
+/** charge using stripe **/
+// router.post('/charge', (request, response) => {
+
+//     let chargeResponse = {};
+
+//     let userID = request.body.userId;
+
+//     booking.findOne({ userId: userID, payment: 'Pending' }, (error, result) => {
+//         console.log(error);
+//         console.log(result);
+//         if (error || result === null) {
+//             chargeResponse.error = true;
+//             chargeResponse.message = "You dont have outstanding payment";
+//             response.status(200).json(chargeResponse);
+//         }
+//         else {
+
+//             let amount = result.amount;
+//             let bookingID = result._id;
+
+//             console.log("Taka", amount);
+//             console.log("Gota taka", parseInt(amount));
+
+//             var stripetoken = request.body.token;
+//             var charge = stripe.charges.create({
+//                 amount: parseInt(amount) * 100,
+//                 currency: 'usd',
+//                 description: 'Sample transaction',
+//                 source: stripetoken
+//             }, function (err, charge) {
+//                 if (err) {
+//                     console.log(err);
+//                     chargeResponse.error = true;
+//                     chargeResponse.message = `Error in payment`;
+//                     response.status(500).json(chargeResponse);
+//                 }
+//                 else {
+//                     booking.findOneAndUpdate({ _id: bookingID }, {
+//                         $set: {
+//                             payment: "Paid"
+//                         }
+//                     }, { new: true }, function (error, result) {
+//                         if (error || result === null) {
+//                             chargeResponse.error = true;
+//                             chargeResponse.message = `Error :` + error.message;
+//                             response.status(500).json(chargeResponse);
+//                         }
+//                         else {
+//                             chargeResponse.error = false;
+//                             chargeResponse.booking = result;
+//                             chargeResponse.message = `Payment success`;
+//                             response.status(200).json(chargeResponse);
+//                         }
+
+//                     });
+//                 }
+
+//             })
+
+//         }
+
+//     });
+
+// })
+
+
+/** charge using authorize.net **/
 router.post('/charge', (request, response) => {
 
     let chargeResponse = {};
@@ -147,47 +217,178 @@ router.post('/charge', (request, response) => {
             console.log("Taka", amount);
             console.log("Gota taka", parseInt(amount));
 
-            var stripetoken = request.body.token;
-            var charge = stripe.charges.create({
-                amount: parseInt(amount) * 100,
-                currency: 'usd',
-                description: 'Sample transaction',
-                source: stripetoken
-            }, function (err, charge) {
-                if (err) {
-                    console.log(err);
+
+            cards.findOne({ userId: userID }, (error, result) => {
+                if (result) {
                     chargeResponse.error = true;
-                    chargeResponse.message = `Error in payment`;
+                    chargeResponse.message = 'Phone number already exist';
                     response.status(500).json(chargeResponse);
+
+                    let card = {
+                        number: result.number,
+                        exp: result.expmonth + result.expyear,
+                        code: result.cvv
+                    };
+
+                    chargeCreditCard(card, bookingID, amount)
+                        .then(function (success) {
+
+                            booking.findOneAndUpdate({ _id: bookingID }, {
+                                $set: {
+                                    payment: "Paid"
+                                }
+                            }, { new: true }, function (error, result) {
+                                if (error || result === null) {
+                                    chargeResponse.error = true;
+                                    chargeResponse.message = `Error :` + error.message;
+                                    response.status(500).json(chargeResponse);
+                                }
+                                else {
+                                    chargeResponse.error = false;
+                                    chargeResponse.booking = result;
+                                    chargeResponse.message = `Payment success`;
+                                    response.status(200).json(chargeResponse);
+                                }
+
+                            });
+
+                        }, function (error) {
+                            chargeResponse.error = true;
+                            chargeResponse.message = 'Transaction not successful';
+                            chargeResponse.result = error;
+                            response.status(500).json(chargeResponse);
+                        });
+
                 }
                 else {
-                    booking.findOneAndUpdate({ _id: bookingID }, {
-                        $set: {
-                            payment: "Paid"
-                        }
-                    }, { new: true }, function (error, result) {
-                        if (error || result === null) {
-                            chargeResponse.error = true;
-                            chargeResponse.message = `Error :` + error.message;
-                            response.status(500).json(chargeResponse);
-                        }
-                        else {
-                            chargeResponse.error = false;
-                            chargeResponse.booking = result;
-                            chargeResponse.message = `Payment success`;
-                            response.status(200).json(chargeResponse);
-                        }
-
-                    });
+                    chargeResponse.error = true;
+                    chargeResponse.message = 'no such user exists';
+                    response.status(500).json(chargeResponse);
                 }
 
-            })
+            });
+
 
         }
 
     });
 
 })
+
+
+function chargeCreditCard(card, bookingID, amount) {
+
+    let cardNumber = card.number;
+    let cardExpDate = card.exp;
+    let cardCode = card.code;
+
+    return new Promise(function (resolve, reject) {
+        var merchantAuthenticationType = new ApiContracts.MerchantAuthenticationType();
+        merchantAuthenticationType.setName(constants.apiLoginKey);
+        merchantAuthenticationType.setTransactionKey(constants.transactionKey);
+
+        var creditCard = new ApiContracts.CreditCardType();
+        creditCard.setCardNumber(cardNumber);
+        creditCard.setExpirationDate(cardExpDate);
+        creditCard.setCardCode(cardCode);
+
+        var paymentType = new ApiContracts.PaymentType();
+        paymentType.setCreditCard(creditCard);
+
+        var orderDetails = new ApiContracts.OrderType();
+        orderDetails.setInvoiceNumber(bookingID);
+        orderDetails.setDescription('Cab booking on Kuoodo app');
+
+
+        var transactionRequestType = new ApiContracts.TransactionRequestType();
+        transactionRequestType.setTransactionType(ApiContracts.TransactionTypeEnum.AUTHCAPTURETRANSACTION);
+        transactionRequestType.setPayment(paymentType);
+        transactionRequestType.setAmount(amount);
+        transactionRequestType.setOrder(orderDetails);
+
+        var createRequest = new ApiContracts.CreateTransactionRequest();
+        createRequest.setMerchantAuthentication(merchantAuthenticationType);
+        createRequest.setTransactionRequest(transactionRequestType);
+
+        //pretty print request
+        console.log(JSON.stringify(createRequest.getJSON(), null, 2));
+
+        var ctrl = new ApiControllers.CreateTransactionController(createRequest.getJSON());
+        //Defaults to sandbox
+        ctrl.setEnvironment(SDKConstants.endpoint.production);
+
+        ctrl.execute(function () {
+
+            var apiResponse = ctrl.getResponse();
+
+            var response = new ApiContracts.CreateTransactionResponse(apiResponse);
+
+            //pretty print response
+            console.log(JSON.stringify(response, null, 2));
+
+            if (response != null) {
+                if (response.getMessages().getResultCode() == ApiContracts.MessageTypeEnum.OK) {
+                    if (response.getTransactionResponse().getMessages() != null) {
+                        console.log('Successfully created transaction with Transaction ID: ' + response.getTransactionResponse().getTransId());
+                        console.log('Response Code: ' + response.getTransactionResponse().getResponseCode());
+                        console.log('Message Code: ' + response.getTransactionResponse().getMessages().getMessage()[0].getCode());
+                        console.log('Description: ' + response.getTransactionResponse().getMessages().getMessage()[0].getDescription());
+                        resolve({
+                            error: false,
+                            transactionId: response.getTransactionResponse().getTransId(),
+                            responseCode: response.getTransactionResponse().getResponseCode(),
+                            messageCode: response.getTransactionResponse().getMessages().getMessage()[0].getCode(),
+                            message: response.getTransactionResponse().getMessages().getMessage()[0].getDescription()
+                        });
+                    }
+                    else {
+                        console.log('Failed Transaction.');
+                        if (response.getTransactionResponse().getErrors() != null) {
+                            console.log('Error Code: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorCode());
+                            console.log('Error message: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorText());
+                            reject({
+                                error: true,
+                                code: response.getTransactionResponse().getErrors().getError()[0].getErrorCode(),
+                                message: response.getTransactionResponse().getErrors().getError()[0].getErrorText()
+                            });
+                        }
+                    }
+                }
+                else {
+                    console.log('Failed Transaction. ');
+                    if (response.getTransactionResponse() != null && response.getTransactionResponse().getErrors() != null) {
+
+                        console.log('Error Code: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorCode());
+                        console.log('Error message: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorText());
+                        reject({
+                            error: true,
+                            code: response.getTransactionResponse().getErrors().getError()[0].getErrorCode(),
+                            message: response.getTransactionResponse().getErrors().getError()[0].getErrorText()
+                        });
+                    }
+                    else {
+                        console.log('Error Code: ' + response.getMessages().getMessage()[0].getCode());
+                        console.log('Error message: ' + response.getMessages().getMessage()[0].getText());
+                        reject({
+                            error: true,
+                            code: response.getTransactionResponse().getErrors().getError()[0].getErrorCode(),
+                            message: response.getTransactionResponse().getErrors().getError()[0].getErrorText()
+                        });
+                    }
+                }
+            }
+            else {
+                console.log('Null Response.');
+                reject({
+                    error: true,
+                    code: 100,
+                    message: 'Null response'
+                });
+            }
+
+        });
+    });
+}
 
 
 module.exports = router;

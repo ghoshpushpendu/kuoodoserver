@@ -4,7 +4,6 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
-    "authorizenet": "^1.0.6",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "cryptr": "^2.0.0",
@@ -21,7 +20,8 @@
     "plivo": "^0.4.2",
     "socket.io": "^2.1.0",
     "stripe": "^6.20.0",
-    "twilio": "^3.8.0"
+    "twilio": "^3.8.0",
+    "authorizenet": "^1.0.7"
   },
   "devDependencies": {},
   "scripts": {
