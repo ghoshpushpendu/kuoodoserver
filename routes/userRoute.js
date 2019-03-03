@@ -826,7 +826,7 @@ var returnRouter = function (io) {
         query.limit = size;
         query.role = 'Driver';
         // Find some documents
-        user.find({}, function (err, data) {
+        user.find({ role: 'Driver' }, function (err, data) {
             // Mongo command to fetch all data from collection.
             if (err) {
                 response = { "error": true, "message": "Error fetching data" };
