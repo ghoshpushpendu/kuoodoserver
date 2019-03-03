@@ -826,7 +826,7 @@ var returnRouter = function (io) {
         query.limit = size;
         // query.role = 'Driver';
         // Find some documents
-        user.find({ role: 'Driver' }, query, function (err, data) {
+        user.find({ role: 'Driver' }, {}, query, function (err, data) {
             // Mongo command to fetch all data from collection.
             console.log(err);
             if (err) {
