@@ -824,9 +824,9 @@ var returnRouter = function (io) {
         }
         query.skip = size * (pageNo - 1)
         query.limit = size;
-        query.role = 'Driver';
+        // query.role = 'Driver';
         // Find some documents
-        user.find({ role: 'Driver' }, function (err, data) {
+        user.find({ role: 'Driver' }, query, function (err, data) {
             // Mongo command to fetch all data from collection.
             if (err) {
                 response = { "error": true, "message": "Error fetching data" };
