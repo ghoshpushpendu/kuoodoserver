@@ -213,7 +213,7 @@ var returnRouter = function (io) {
                 response.status(500).json(userLoginResponse);
             }
             else if (result) {
-                result.firstName = (request.body.firstName ? (request.body.firstName) : result.firstName);
+                result.firstName = (request.body.fverifyUserirstName ? (request.body.firstName) : result.firstName);
                 result.lastName = (request.body.lastName ? (request.body.lastName) : result.lastName);
                 result.address = {
                     address: request.body.address ? (request.body.address.address) : null,
@@ -333,18 +333,33 @@ var returnRouter = function (io) {
                                 response.status(500).json(userLoginResponse);
                             }
                             else {
-                                userLoginResponse.error = false;
-                                userLoginResponse.user = result;
-                                userLoginResponse.message = `User login successfully .`;
-                                response.status(200).json(userLoginResponse);
+                                if (result.role == 'Driver' && result.status == 'Pending') {
+                                    userLoginResponse.error = true;
+                                    userLoginResponse.user = result;
+                                    userLoginResponse.message = `Your account is pending approval.`;
+                                    response.status(200).json(userLoginResponse);
+                                } else {
+                                    userLoginResponse.error = false;
+                                    userLoginResponse.user = result;
+                                    userLoginResponse.message = `User login successfully.`;
+                                    response.status(200).json(userLoginResponse);
+                                }
                             }
                         });
                     }
                     else {
-                        userLoginResponse.error = false;
-                        userLoginResponse.user = result;
-                        userLoginResponse.message = `User login successfully.`;
-                        response.status(200).json(userLoginResponse);
+
+                        if (result.role == 'Driver' && result.status == 'Pending') {
+                            userLoginResponse.error = true;
+                            userLoginResponse.user = result;
+                            userLoginResponse.message = `Your account is pending approval.`;
+                            response.status(200).json(userLoginResponse);
+                        } else {
+                            userLoginResponse.error = false;
+                            userLoginResponse.user = result;
+                            userLoginResponse.message = `User login successfully.`;
+                            response.status(200).json(userLoginResponse);
+                        }
                     }
                 }
                 else if (result.password != password) {
