@@ -1,38 +1,28 @@
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-const documentSchema = mongoose.Schema({
+const bank = mongoose.Schema({
     userId: {
         type: Schema.ObjectId,
         ref: 'user'
     },
-    taxId: {
+    bankName: {
         type: String
     },
-    drivingLicense: {
+    accountNumber: {
         type: String
     },
-    vehicleInsurance: {
+    ifscCode: {
         type: String
     },
-    vechileRegistration: {
+    branch: {
         type: String
     },
-    vehiclePermit: {
+    accountHolder: {
         type: String
     },
-    carName: {
+    status: {
         type: String
     },
-    carNumber: {
-        type: String
-    },
-    carType: {
-        type: String
-    },
-    carImage: {
-        type: String
-    },
-
     createdDate: {
         type: Date,
         default: Date.now
@@ -46,13 +36,13 @@ const documentSchema = mongoose.Schema({
         default: 1
     }
 })
-documentSchema.pre('findOne', function (next) {
+bank.pre('findOne', function (next) {
     this.populate('userId');
     next();
 });
-documentSchema.pre('find', function (next) {
+bank.pre('find', function (next) {
     this.populate('userId');
     next();
 });
 
-const document = module.exports = mongoose.model('document', documentSchema);
+const cardModule = module.exports = mongoose.model('bank', bank);

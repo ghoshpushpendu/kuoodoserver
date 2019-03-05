@@ -36,7 +36,6 @@ const userSchema = mongoose.Schema({
         country: String,
         zipCode: Number
     },
-
     providers: {
         type: String
     },
@@ -75,6 +74,9 @@ const userSchema = mongoose.Schema({
         type: String,
         enum: ['Online', 'Offline', 'Busy',]
     },
+    taxId: {
+        type: String
+    },
     drivingLicense: {
         type: String
     },
@@ -94,6 +96,9 @@ const userSchema = mongoose.Schema({
         type: String
     },
     carType: {
+        type: String
+    },
+    totalEarning: {
         type: String
     },
     createdDate: {

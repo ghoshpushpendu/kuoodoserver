@@ -1,18 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const user = require('../models/user');
+const payout = require('../models/payouts');
 
-router.post('/updateDriverDocs', (request, response) => {
+router.post('/request', (request, response) => {
     console.log(request.body);
 
 
     let userId = request.body.userId;
-    let data = ({
+    let bankId = request.body.bankId;
+    
+    let data = {
         drivingLicense: request.body.drivingLicense,
         vehicleInsurance: request.body.vehicleInsurance,
         vechileRegistration: request.body.vechileRegistration,
         vehiclePermit: request.body.vehiclePermit,
-    });
+    };
 
     let documentResponse = {};
 
