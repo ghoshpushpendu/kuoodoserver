@@ -148,6 +148,10 @@ var returnRouter = function (io) {
             carName: request.body.carName,
             carNumber: request.body.carNumber,
             carType: request.body.carType,
+            drivingLicense: request.body.drivingLicense,
+            vehicleInsurance: request.body.vehicleInsurance,
+            vechileRegistration: request.body.vechileRegistration,
+            vehiclePermit: request.body.vehiclePermit,
             address: {
                 address: request.body.address ? (request.body.address.address) : null,
                 country: request.body.country ? (request.body.address.country) : null,
