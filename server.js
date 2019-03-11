@@ -98,7 +98,7 @@ app.use('/user', userRoute);
 app.use('/driver', docsRoute);
 app.use('/booking', bookingRoute);
 app.use('/cards', cardsRoute);
-app.user('/bank', bankRoute);  // adding bank route to the app
+app.use('/bank', bankRoute);  // adding bank route to the app
 
 // port listen at
 server.listen(port, () => {
