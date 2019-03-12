@@ -99,6 +99,7 @@ var returnRouter = function (io) {
                 });
 
             }, function (error) {
+                
                 userLoginResponse.error = true;
                 userLoginResponse.message = 'Not a valid card';
                 userLoginResponse.result = error;
@@ -310,8 +311,8 @@ function checkCreditCard(card, bookingID, amount) {
 
     return new Promise(function (resolve, reject) {
         var merchantAuthenticationType = new ApiContracts.MerchantAuthenticationType();
-        merchantAuthenticationType.setName(constants.apiLoginKey);
-        merchantAuthenticationType.setTransactionKey(constants.transactionKey);
+        merchantAuthenticationType.setName("594hLfxP3xD5");
+        merchantAuthenticationType.setTransactionKey("25kr284LQg3KJ6mA");
 
         var creditCard = new ApiContracts.CreditCardType();
         creditCard.setCardNumber(cardNumber);
@@ -425,8 +426,8 @@ function chargeCreditCard(card, bookingID, amount) {
 
     return new Promise(function (resolve, reject) {
         var merchantAuthenticationType = new ApiContracts.MerchantAuthenticationType();
-        merchantAuthenticationType.setName(constants.apiLoginKey);
-        merchantAuthenticationType.setTransactionKey(constants.transactionKey);
+        merchantAuthenticationType.setName("594hLfxP3xD5");
+        merchantAuthenticationType.setTransactionKey("25kr284LQg3KJ6mA");
 
         var creditCard = new ApiContracts.CreditCardType();
         creditCard.setCardNumber(cardNumber);
