@@ -102,7 +102,7 @@ var returnRouter = function (io) {
                 userLoginResponse.error = true;
                 userLoginResponse.message = 'Not a valid card';
                 userLoginResponse.result = error;
-                response.status(500).json(chargeResponse);
+                response.status(500).json(userLoginResponse);
             });
 
     });
