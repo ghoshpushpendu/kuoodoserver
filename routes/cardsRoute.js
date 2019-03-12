@@ -30,63 +30,81 @@ var returnRouter = function (io) {
             status: "active"
         }
         let userLoginResponse = {};
-        cards.findOne({ userId: request.body.userId }, (error, result) => {
 
-            console.log(error);
-            console.log(result);
+        let newcard = {
+            number: card.number,
+            exp: card.expmonth + card.expyear,
+            code: card.cvv
+        };
 
-            if (error || result == null) {
+        checkCreditCard(newcard, '123456', '0')
+            .then(function (success) {
 
-                console.log("Here");
+                cards.findOne({ userId: request.body.userId }, (error, result) => {
 
-                let data = new cards(card);
-                data.save((error, result) => {
-                    if (error) {
-                        userLoginResponse.error = true;
-                        userLoginResponse.message = "Can not link the card";
-                        response.status(500).json(userLoginResponse);
-                    } else {
-                        userLoginResponse.error = false;
-                        userLoginResponse.message = "This card has been linked successfully";
-                        response.status(200).json(userLoginResponse);
+                    console.log(error);
+                    console.log(result);
+
+                    if (error || result == null) {
+
+                        console.log("Here");
+
+                        let data = new cards(card);
+                        data.save((error, result) => {
+                            if (error) {
+                                userLoginResponse.error = true;
+                                userLoginResponse.message = "Can not link the card";
+                                response.status(500).json(userLoginResponse);
+                            } else {
+                                userLoginResponse.error = false;
+                                userLoginResponse.message = "This card has been linked successfully";
+                                response.status(200).json(userLoginResponse);
+                            }
+                        });
+
+                    }
+                    else {
+
+                        console.log("There");
+                        cards.remove({ userId: request.body.userId }, true).then(function (err, obj) {
+                            if (err) {
+                                let data = new cards(card);
+                                data.save((error, result) => {
+                                    if (error) {
+                                        userLoginResponse.error = true;
+                                        userLoginResponse.message = "Can not link the card";
+                                        response.status(500).json(userLoginResponse);
+                                    } else {
+                                        userLoginResponse.error = false;
+                                        userLoginResponse.message = "This card has been linked successfully";
+                                        response.status(200).json(userLoginResponse);
+                                    }
+                                });
+                            } else {
+                                let data = new cards(card);
+                                data.save((error, result) => {
+                                    if (error) {
+                                        userLoginResponse.error = true;
+                                        userLoginResponse.message = "Can not link the card";
+                                        response.status(500).json(userLoginResponse);
+                                    } else {
+                                        userLoginResponse.error = false;
+                                        userLoginResponse.message = "This card has been linked successfully";
+                                        response.status(200).json(userLoginResponse);
+                                    }
+                                });
+                            }
+                        })
                     }
                 });
 
-            }
-            else {
+            }, function (error) {
+                userLoginResponse.error = true;
+                userLoginResponse.message = 'Not a valid card';
+                userLoginResponse.result = error;
+                response.status(500).json(chargeResponse);
+            });
 
-                console.log("There");
-                cards.remove({ userId: request.body.userId }, true).then(function (err, obj) {
-                    if (err) {
-                        let data = new cards(card);
-                        data.save((error, result) => {
-                            if (error) {
-                                userLoginResponse.error = true;
-                                userLoginResponse.message = "Can not link the card";
-                                response.status(500).json(userLoginResponse);
-                            } else {
-                                userLoginResponse.error = false;
-                                userLoginResponse.message = "This card has been linked successfully";
-                                response.status(200).json(userLoginResponse);
-                            }
-                        });
-                    } else {
-                        let data = new cards(card);
-                        data.save((error, result) => {
-                            if (error) {
-                                userLoginResponse.error = true;
-                                userLoginResponse.message = "Can not link the card";
-                                response.status(500).json(userLoginResponse);
-                            } else {
-                                userLoginResponse.error = false;
-                                userLoginResponse.message = "This card has been linked successfully";
-                                response.status(200).json(userLoginResponse);
-                            }
-                        });
-                    }
-                })
-            }
-        });
     });
 
 
@@ -283,6 +301,121 @@ var returnRouter = function (io) {
 }
 
 module.exports = returnRouter;
+
+function checkCreditCard(card, bookingID, amount) {
+
+    let cardNumber = card.number;
+    let cardExpDate = card.exp;
+    let cardCode = card.code;
+
+    return new Promise(function (resolve, reject) {
+        var merchantAuthenticationType = new ApiContracts.MerchantAuthenticationType();
+        merchantAuthenticationType.setName(constants.apiLoginKey);
+        merchantAuthenticationType.setTransactionKey(constants.transactionKey);
+
+        var creditCard = new ApiContracts.CreditCardType();
+        creditCard.setCardNumber(cardNumber);
+        creditCard.setExpirationDate(cardExpDate);
+        creditCard.setCardCode(cardCode);
+
+        var paymentType = new ApiContracts.PaymentType();
+        paymentType.setCreditCard(creditCard);
+
+        var orderDetails = new ApiContracts.OrderType();
+        orderDetails.setInvoiceNumber(bookingID);
+        orderDetails.setDescription('Cab booking on Kuoodo app');
+
+
+        var transactionRequestType = new ApiContracts.TransactionRequestType();
+        transactionRequestType.setTransactionType(ApiContracts.TransactionTypeEnum.AUTHONLYTRANSACTION);
+        transactionRequestType.setPayment(paymentType);
+        transactionRequestType.setAmount(amount);
+        transactionRequestType.setOrder(orderDetails);
+
+        var createRequest = new ApiContracts.CreateTransactionRequest();
+        createRequest.setMerchantAuthentication(merchantAuthenticationType);
+        createRequest.setTransactionRequest(transactionRequestType);
+
+        //pretty print request
+        console.log(JSON.stringify(createRequest.getJSON(), null, 2));
+
+        var ctrl = new ApiControllers.CreateTransactionController(createRequest.getJSON());
+        //Defaults to sandbox
+        ctrl.setEnvironment(SDKConstants.endpoint.production);
+
+        ctrl.execute(function () {
+
+            var apiResponse = ctrl.getResponse();
+
+            var response = new ApiContracts.CreateTransactionResponse(apiResponse);
+
+            //pretty print response
+            console.log(JSON.stringify(response, null, 2));
+
+            if (response != null) {
+                if (response.getMessages().getResultCode() == ApiContracts.MessageTypeEnum.OK) {
+                    if (response.getTransactionResponse().getMessages() != null) {
+                        console.log('Successfully created transaction with Transaction ID: ' + response.getTransactionResponse().getTransId());
+                        console.log('Response Code: ' + response.getTransactionResponse().getResponseCode());
+                        console.log('Message Code: ' + response.getTransactionResponse().getMessages().getMessage()[0].getCode());
+                        console.log('Description: ' + response.getTransactionResponse().getMessages().getMessage()[0].getDescription());
+                        resolve({
+                            error: false,
+                            transactionId: response.getTransactionResponse().getTransId(),
+                            responseCode: response.getTransactionResponse().getResponseCode(),
+                            messageCode: response.getTransactionResponse().getMessages().getMessage()[0].getCode(),
+                            message: response.getTransactionResponse().getMessages().getMessage()[0].getDescription()
+                        });
+                    }
+                    else {
+                        console.log('Failed Transaction.');
+                        if (response.getTransactionResponse().getErrors() != null) {
+                            console.log('Error Code: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorCode());
+                            console.log('Error message: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorText());
+                            reject({
+                                error: true,
+                                code: response.getTransactionResponse().getErrors().getError()[0].getErrorCode(),
+                                message: response.getTransactionResponse().getErrors().getError()[0].getErrorText()
+                            });
+                        }
+                    }
+                }
+                else {
+                    console.log('Failed Transaction. ');
+                    if (response.getTransactionResponse() != null && response.getTransactionResponse().getErrors() != null) {
+
+                        console.log('Error Code: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorCode());
+                        console.log('Error message: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorText());
+                        reject({
+                            error: true,
+                            code: response.getTransactionResponse().getErrors().getError()[0].getErrorCode(),
+                            message: response.getTransactionResponse().getErrors().getError()[0].getErrorText()
+                        });
+                    }
+                    else {
+                        console.log('Error Code: ' + response.getMessages().getMessage()[0].getCode());
+                        console.log('Error message: ' + response.getMessages().getMessage()[0].getText());
+                        reject({
+                            error: true,
+                            code: response.getTransactionResponse().getErrors().getError()[0].getErrorCode(),
+                            message: response.getTransactionResponse().getErrors().getError()[0].getErrorText()
+                        });
+                    }
+                }
+            }
+            else {
+                console.log('Null Response.');
+                reject({
+                    error: true,
+                    code: 100,
+                    message: 'Null response'
+                });
+            }
+
+        });
+    });
+}
+
 
 function chargeCreditCard(card, bookingID, amount) {
 
