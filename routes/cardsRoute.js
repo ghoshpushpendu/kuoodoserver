@@ -37,7 +37,7 @@ var returnRouter = function (io) {
             code: card.cvv
         };
 
-        checkCreditCard(newcard, '123456', '0')
+        checkCreditCard(newcard, '123456', '1')
             .then(function (success) {
 
                 cards.findOne({ userId: request.body.userId }, (error, result) => {
