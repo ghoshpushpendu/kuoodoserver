@@ -493,53 +493,43 @@ var returnRouter = function (io) {
             results: [
                 {
                     "name": "Economy",
-                    "initialCost": "2.2",
-                    "serviceFee": "2.2",
-                    "perMinutes": "0.24",
-                    "perMile": "1.33",
-                    "minimum": "5",
-                    "maximum": "400",
-                    "cancellation": "5"
+                    "initialCost": "2.095",
+                    "serviceFee": "0",
+                    "perMinutes": "0.30",
+                    "perMile": "0.75",
+                    "minimum": "4.00",
+                    "maximum": "330.00",
+                    "cancellation": "5.50"
                 },
                 {
-                    "name": "Xtra",
-                    "initialCost": "2.45",
-                    "serviceFee": "2.45",
-                    "perMinutes": "0.3",
-                    "perMile": "2.06",
-                    "minimum": "7",
-                    "maximum": "400",
-                    "cancellation": "5"
+                    "name": "Premium",
+                    "initialCost": "2.00",
+                    "serviceFee": "0",
+                    "perMinutes": "0.33",
+                    "perMile": "1.45",
+                    "minimum": "5.50",
+                    "maximum": "330.00",
+                    "cancellation": "5.50"
                 },
                 {
                     "name": "Luxury",
-                    "initialCost": "8",
-                    "serviceFee": "1.75",
-                    "perMinutes": "0.65",
-                    "perMile": "3.81",
-                    "minimum": "15",
+                    "initialCost": "4.00",
+                    "serviceFee": "0",
+                    "perMinutes": "0.72",
+                    "perMile": "1.65",
+                    "minimum": "7.50",
                     "maximum": "400",
-                    "cancellation": "5"
+                    "cancellation": "11.00"
                 },
                 {
                     "name": "SUV Luxury",
-                    "initialCost": "15",
-                    "serviceFee": "1.75",
-                    "perMinutes": "0.9",
-                    "perMile": "3.81",
-                    "minimum": "25",
-                    "maximum": "400",
-                    "cancellation": "5"
-                },
-                {
-                    "name": "Supreme",
-                    "initialCost": "5",
-                    "serviceFee": "2.45",
-                    "perMinutes": "0.5",
-                    "perMile": "2.81",
-                    "minimum": "9",
-                    "maximum": "400",
-                    "cancellation": "5"
+                    "initialCost": "12.50",
+                    "serviceFee": "0",
+                    "perMinutes": "0.95",
+                    "perMile": "2.60",
+                    "minimum": "20.0",
+                    "maximum": "575.00",
+                    "cancellation": "11.00"
                 }
             ]
         }
