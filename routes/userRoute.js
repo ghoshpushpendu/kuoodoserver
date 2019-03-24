@@ -230,6 +230,10 @@ var returnRouter = function (io) {
                     result.email = (request.body.email ? (request.body.email).toLowerCase() : result.email)
                 };
 
+                if (request.body.taxId) {
+                    result.taxId = request.body.taxId
+                };
+
                 result.save((error, result) => {
                     if (error || result === null) {
                         userLoginResponse.error = true;
