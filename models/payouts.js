@@ -5,7 +5,7 @@ const payouts = mongoose.Schema({
         type: Schema.ObjectId,
         ref: 'user'
     },
-    bank: {
+    bankId: {
         type: Schema.ObjectId,
         ref: 'bank'
     },
@@ -13,10 +13,12 @@ const payouts = mongoose.Schema({
         type: String
     },
     currency: {
-        type: String
+        type: String,
+        default: 'usd'
     },
     status: {
-        type: String
+        type: String,
+        default: 'success'
     },
     createdDate: {
         type: Date,

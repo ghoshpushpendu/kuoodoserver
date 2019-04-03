@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bank = require('../models/bank');
 
-router.post('/addAccount', (request, response) => {
+router.post('/addaccount', (request, response) => {
     console.log(request.body);
 
 
@@ -21,7 +21,9 @@ router.post('/addAccount', (request, response) => {
 
     //check if user already has bank details
 
-    bank.find({ userId: userId }, function (error, success) {
+    bank.find({
+        userId: userId
+    }, function (error, success) {
         if (error) {
             // create bank data
             bankData.userId = userId;
@@ -40,13 +42,18 @@ router.post('/addAccount', (request, response) => {
             });
         } else {
             // update bank data
-            bank.findOneAndUpdate({ userId: userId }, { $set: bankData }, { new: true }, function (error, result) {
+            bank.findOneAndUpdate({
+                userId: userId
+            }, {
+                $set: bankData
+            }, {
+                new: true
+            }, function (error, result) {
                 if (error || result === null) {
                     bankResponse.error = true;
                     bankResponse.message = `Error :` + error.message;
                     response.status(500).json(bankResponse);
-                }
-                else {
+                } else {
                     bankResponse.error = false;
                     bankResponse.bank = result;
                     bankResponse.message = `Banking details updated successfully.`;
@@ -59,4 +66,3 @@ router.post('/addAccount', (request, response) => {
 });
 
 module.exports = router;
-

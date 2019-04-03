@@ -1,5 +1,5 @@
 /* importing modules
-*/
+ */
 const express = require('express');
 const router = express.Router();
 const user = require('../models/user');
@@ -40,7 +40,9 @@ var returnRouter = function (io) {
         checkCreditCard(newcard, '123456', '1')
             .then(function (success) {
 
-                cards.findOne({ userId: request.body.userId }, (error, result) => {
+                cards.findOne({
+                    userId: request.body.userId
+                }, (error, result) => {
 
                     console.log(error);
                     console.log(result);
@@ -62,11 +64,12 @@ var returnRouter = function (io) {
                             }
                         });
 
-                    }
-                    else {
+                    } else {
 
                         console.log("There");
-                        cards.remove({ userId: request.body.userId }, true).then(function (err, obj) {
+                        cards.remove({
+                            userId: request.body.userId
+                        }, true).then(function (err, obj) {
                             if (err) {
                                 let data = new cards(card);
                                 data.save((error, result) => {
@@ -99,7 +102,7 @@ var returnRouter = function (io) {
                 });
 
             }, function (error) {
-                
+
                 userLoginResponse.error = true;
                 userLoginResponse.message = 'Not a valid card';
                 userLoginResponse.result = error;
@@ -112,7 +115,9 @@ var returnRouter = function (io) {
     router.post('/delete', (req, res) => {
         let number = req.body.number;
         let userLoginResponse = {};
-        cards.remove({ number: number }).then(function (err, obj) {
+        cards.remove({
+            number: number
+        }).then(function (err, obj) {
             if (err) {
                 console.log(err);
                 userLoginResponse.error = true;
@@ -131,7 +136,9 @@ var returnRouter = function (io) {
         let userid = request.body.userId;
 
         let searchResponse = {};
-        cards.find({ userId: userid }).exec(function (error, result) {
+        cards.find({
+            userId: userid
+        }).exec(function (error, result) {
             if (error) {
                 searchResponse.error = true;
                 searchResponse.message = "No cards has been linked";
@@ -219,15 +226,17 @@ var returnRouter = function (io) {
 
         let userID = request.body.userId;
 
-        booking.findOne({ userId: userID, payment: 'Pending' }, (error, result) => {
+        booking.findOne({
+            userId: userID,
+            payment: 'Pending'
+        }, (error, result) => {
             console.log(error);
             console.log(result);
             if (error || result === null) {
                 chargeResponse.error = true;
                 chargeResponse.message = "You dont have outstanding payment";
                 response.status(200).json(chargeResponse);
-            }
-            else {
+            } else {
 
                 let amount = result.amount;
                 let bookingID = result._id;
@@ -237,7 +246,9 @@ var returnRouter = function (io) {
                 console.log("Gota taka", parseInt(amount));
 
 
-                cards.findOne({ userId: userID }, (error, result) => {
+                cards.findOne({
+                    userId: userID
+                }, (error, result) => {
                     if (result) {
                         chargeResponse.error = true;
                         chargeResponse.message = 'Phone number already exist';
@@ -252,24 +263,49 @@ var returnRouter = function (io) {
                         chargeCreditCard(card, bookingID, amount)
                             .then(function (success) {
 
-                                booking.findOneAndUpdate({ _id: bookingID }, {
+                                booking.findOneAndUpdate({
+                                    _id: bookingID
+                                }, {
                                     $set: {
                                         payment: "Paid"
                                     }
-                                }, { new: true }, function (error, result) {
+                                }, {
+                                    new: true
+                                }, function (error, result) {
                                     if (error || result === null) {
                                         chargeResponse.error = true;
                                         chargeResponse.message = `Error :` + error.message;
                                         response.status(500).json(chargeResponse);
-                                    }
-                                    else {
+                                    } else {
 
-                                        io.to(socketID).emit('paid', result);
 
-                                        chargeResponse.error = false;
-                                        chargeResponse.booking = result;
-                                        chargeResponse.message = `Payment success`;
-                                        response.status(200).json(chargeResponse);
+                                        user.findOneAndUpdate({
+                                            _id: result.driverId._id
+                                        }, {
+                                            $set: {
+                                                totalEarning: parseFloat(result.driverId.totalEarning) + parseFloat(result.amount)
+                                            }
+                                        }, {
+                                            new: true
+                                        }, function (error, result) {
+                                            if (error || result === null) {
+                                                chargeResponse.error = true;
+                                                chargeResponse.message = `Error :` + error.message;
+                                                response.status(500).json(chargeResponse);
+                                            } else {
+
+                                                user.findByIdAndUpdate()
+
+                                                io.to(socketID).emit('paid', result);
+
+                                                chargeResponse.error = false;
+                                                chargeResponse.booking = result;
+                                                chargeResponse.message = `Payment success`;
+                                                response.status(200).json(chargeResponse);
+                                            }
+
+                                        });
+
                                     }
 
                                 });
@@ -281,8 +317,7 @@ var returnRouter = function (io) {
                                 response.status(500).json(chargeResponse);
                             });
 
-                    }
-                    else {
+                    } else {
                         chargeResponse.error = true;
                         chargeResponse.message = 'no such user exists';
                         response.status(500).json(chargeResponse);
@@ -367,8 +402,7 @@ function checkCreditCard(card, bookingID, amount) {
                             messageCode: response.getTransactionResponse().getMessages().getMessage()[0].getCode(),
                             message: response.getTransactionResponse().getMessages().getMessage()[0].getDescription()
                         });
-                    }
-                    else {
+                    } else {
                         console.log('Failed Transaction.');
                         if (response.getTransactionResponse().getErrors() != null) {
                             console.log('Error Code: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorCode());
@@ -380,8 +414,7 @@ function checkCreditCard(card, bookingID, amount) {
                             });
                         }
                     }
-                }
-                else {
+                } else {
                     console.log('Failed Transaction. ');
                     if (response.getTransactionResponse() != null && response.getTransactionResponse().getErrors() != null) {
 
@@ -392,8 +425,7 @@ function checkCreditCard(card, bookingID, amount) {
                             code: response.getTransactionResponse().getErrors().getError()[0].getErrorCode(),
                             message: response.getTransactionResponse().getErrors().getError()[0].getErrorText()
                         });
-                    }
-                    else {
+                    } else {
                         console.log('Error Code: ' + response.getMessages().getMessage()[0].getCode());
                         console.log('Error message: ' + response.getMessages().getMessage()[0].getText());
                         reject({
@@ -403,8 +435,7 @@ function checkCreditCard(card, bookingID, amount) {
                         });
                     }
                 }
-            }
-            else {
+            } else {
                 console.log('Null Response.');
                 reject({
                     error: true,
@@ -482,8 +513,7 @@ function chargeCreditCard(card, bookingID, amount) {
                             messageCode: response.getTransactionResponse().getMessages().getMessage()[0].getCode(),
                             message: response.getTransactionResponse().getMessages().getMessage()[0].getDescription()
                         });
-                    }
-                    else {
+                    } else {
                         console.log('Failed Transaction.');
                         if (response.getTransactionResponse().getErrors() != null) {
                             console.log('Error Code: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorCode());
@@ -495,8 +525,7 @@ function chargeCreditCard(card, bookingID, amount) {
                             });
                         }
                     }
-                }
-                else {
+                } else {
                     console.log('Failed Transaction. ');
                     if (response.getTransactionResponse() != null && response.getTransactionResponse().getErrors() != null) {
 
@@ -507,8 +536,7 @@ function chargeCreditCard(card, bookingID, amount) {
                             code: response.getTransactionResponse().getErrors().getError()[0].getErrorCode(),
                             message: response.getTransactionResponse().getErrors().getError()[0].getErrorText()
                         });
-                    }
-                    else {
+                    } else {
                         console.log('Error Code: ' + response.getMessages().getMessage()[0].getCode());
                         console.log('Error message: ' + response.getMessages().getMessage()[0].getText());
                         reject({
@@ -518,8 +546,7 @@ function chargeCreditCard(card, bookingID, amount) {
                         });
                     }
                 }
-            }
-            else {
+            } else {
                 console.log('Null Response.');
                 reject({
                     error: true,
@@ -531,4 +558,3 @@ function chargeCreditCard(card, bookingID, amount) {
         });
     });
 }
-

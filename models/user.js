@@ -51,7 +51,7 @@ const userSchema = mongoose.Schema({
         type: String
     },
     location: {
-        type: [Number],                //latitude and longitude
+        type: [Number], //latitude and longitude
         index: '2d'
     },
     accuracy: {
@@ -72,7 +72,7 @@ const userSchema = mongoose.Schema({
     },
     availability: {
         type: String,
-        enum: ['Online', 'Offline', 'Busy',]
+        enum: ['Online', 'Offline', 'Busy', ]
     },
     taxId: {
         type: String
@@ -99,7 +99,12 @@ const userSchema = mongoose.Schema({
         type: String
     },
     totalEarning: {
-        type: String
+        type: String,
+        default: '0'
+    },
+    totalPayout: {
+        type: String,
+        default: '0'
     },
     createdDate: {
         type: Date,
