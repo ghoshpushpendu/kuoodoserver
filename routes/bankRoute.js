@@ -24,6 +24,7 @@ router.post('/addaccount', (request, response) => {
     bank.find({
         userId: userId
     }, function (error, success) {
+        console.log(error, success);
         if (success && success === null) {
             // create bank data
             bankData.userId = userId;
@@ -49,6 +50,7 @@ router.post('/addaccount', (request, response) => {
                 }, {
                     new: true
                 }, function (error, result) {
+                    console.log(error, result);
                     if (error || result === null) {
                         bankResponse.error = true;
                         bankResponse.message = `Error :` + error.message;
