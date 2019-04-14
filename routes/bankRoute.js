@@ -45,24 +45,59 @@ router.post('/addaccount', (request, response) => {
             bank.findOneAndUpdate({
                 userId: userId
             }, {
-                $set: bankData
-            }, {
-                new: true
-            }, function (error, result) {
-                if (error || result === null) {
-                    bankResponse.error = true;
-                    bankResponse.message = `Error :` + error.message;
-                    response.status(500).json(bankResponse);
-                } else {
-                    bankResponse.error = false;
-                    bankResponse.bank = result;
-                    bankResponse.message = `Banking details updated successfully.`;
-                    response.status(200).json(bankResponse);
-                }
-            });
+                    $set: bankData
+                }, {
+                    new: true
+                }, function (error, result) {
+                    if (error || result === null) {
+                        bankResponse.error = true;
+                        bankResponse.message = `Error :` + error.message;
+                        response.status(500).json(bankResponse);
+                    } else {
+                        bankResponse.error = false;
+                        bankResponse.bank = result;
+                        bankResponse.message = `Banking details updated successfully.`;
+                        response.status(200).json(bankResponse);
+                    }
+                });
         }
     })
 
 });
+
+router.get('/getaccount', (request, response) => {
+    console.log(request.body);
+
+
+    let userId = request.body.userId;
+
+
+    let bankResponse = {};
+
+    //check if user already has bank details
+
+    bank.find({
+        userId: userId
+    }, function (error, success) {
+        if (error) {
+            // create bank data
+            bankResponse.error = true;
+            bankResponse.message = `Error :` + error.message;
+            response.status(500).json(bankResponse);
+        } else if (success && success != null) {
+            // create bank data
+            bankResponse.error = false;
+            bankResponse.bank = success;
+            response.status(500).json(bankResponse);
+        } else if (success && success == null) {
+            bankResponse.error = true;
+            bankResponse.message = "No bank account found for this user";
+            response.status(500).json(bankResponse);
+        }
+    })
+
+});
+
+
 
 module.exports = router;
