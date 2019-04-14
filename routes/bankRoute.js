@@ -98,6 +98,28 @@ router.get('/getaccount', (request, response) => {
 
 });
 
+/* deleting user phone number
+ send phone number in body
+ */
+router.post('/delete', (req, res) => {
+    console.log("user delete", req.body);
+    bank.remove({ userId: req.body.userId }).then(data => {
+        if (data) {
+            res.status(200).json({
+                error: false,
+                data: data,
+                message: "Account deleted"
+            });
+        }
+        else
+            res.status(200).json({
+                error: true,
+                data: data,
+                message: "Can not delete account"
+            });
+    })
+})
+
 
 
 module.exports = router;
