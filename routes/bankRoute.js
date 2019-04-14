@@ -25,7 +25,7 @@ router.post('/addaccount', (request, response) => {
         userId: userId
     }, function (error, success) {
         console.log(error, success);
-        if (success && success === null) {
+        if (success && success == []) {
             // create bank data
             bankData.userId = userId;
             let tbank = new bank(bankData);
@@ -51,9 +51,9 @@ router.post('/addaccount', (request, response) => {
                     new: true
                 }, function (error, result) {
                     console.log(error, result);
-                    if (error || result === null) {
+                    if (result === null) {
                         bankResponse.error = true;
-                        bankResponse.message = `Error :` + error.message;
+                        bankResponse.message = "Error updating account";
                         response.status(500).json(bankResponse);
                     } else {
                         bankResponse.error = false;
