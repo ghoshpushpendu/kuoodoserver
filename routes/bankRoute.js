@@ -24,7 +24,7 @@ router.post('/addaccount', (request, response) => {
     bank.find({
         userId: userId
     }, function (error, success) {
-        if (error) {
+        if (success && success === null) {
             // create bank data
             bankData.userId = userId;
             let tbank = new bank(bankData);
