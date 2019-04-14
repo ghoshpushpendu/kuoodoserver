@@ -83,16 +83,16 @@ router.get('/getaccount', (request, response) => {
             // create bank data
             bankResponse.error = true;
             bankResponse.message = `Error :` + error.message;
-            response.status(500).json(bankResponse);
+            response.status(200).json(bankResponse);
         } else if (success && success != null) {
             // create bank data
             bankResponse.error = false;
             bankResponse.bank = success;
-            response.status(500).json(bankResponse);
+            response.status(200).json(bankResponse);
         } else if (success && success == null) {
             bankResponse.error = true;
             bankResponse.message = "No bank account found for this user";
-            response.status(500).json(bankResponse);
+            response.status(200).json(bankResponse);
         }
     })
 
