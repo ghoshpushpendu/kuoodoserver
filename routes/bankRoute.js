@@ -69,7 +69,7 @@ router.get('/getaccount', (request, response) => {
     console.log(request.body);
 
 
-    let userId = request.body.userId;
+    let userId = request.query.userId;
 
 
     let bankResponse = {};
