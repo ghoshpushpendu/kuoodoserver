@@ -50,8 +50,12 @@ var returnRouter = function (io) {
         coords[1] = request.body.pickUpLocation.latitude;
         console.log(coords);
         let searchResponse = {};
-        user.find(
-            {
+        let query = {
+
+        }
+
+        if (request.body.carType) {
+            query = {
                 location: {
                     $nearSphere: coords,
                     $maxDistance: 3000
@@ -60,6 +64,18 @@ var returnRouter = function (io) {
                 availability: "Online",
                 carType: request.body.carType
             }
+        } else {
+            query = {
+                location: {
+                    $nearSphere: coords,
+                    $maxDistance: 3000
+                },
+                status: "Activated",
+                availability: "Online"
+            }
+        }
+        user.find(
+            query
         ).limit(1).exec(function (error, driver) {
             if (error) {
                 searchResponse.error = true;
