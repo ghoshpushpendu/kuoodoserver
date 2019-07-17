@@ -60,7 +60,6 @@ var returnRouter = function (io) {
                     $nearSphere: coords,
                     $maxDistance: 3000
                 },
-                status: "Activated",
                 availability: "Online",
                 carType: request.body.carType
             }
@@ -70,7 +69,6 @@ var returnRouter = function (io) {
                     $nearSphere: coords,
                     $maxDistance: 3000
                 },
-                status: "Activated",
                 availability: "Online"
             }
         }
