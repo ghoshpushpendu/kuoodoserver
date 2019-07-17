@@ -746,7 +746,7 @@ var returnRouter = function (io) {
                 $nearSphere: coords,
                 $maxDistance: 3000 // distance in meter
             },
-            status: "Activated",
+            // status: "Activated",
             availability: "Online"
         }).exec(function (error, result) {
             if (error) {
