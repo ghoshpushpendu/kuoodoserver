@@ -217,7 +217,7 @@ var returnRouter = function (io) {
                 response.status(500).json(userLoginResponse);
             }
             else if (result) {
-                result.firstName = (request.body.fverifyUserirstName ? (request.body.firstName) : result.firstName);
+                result.firstName = (request.body.firstname ? (request.body.firstName) : result.firstName);
                 result.lastName = (request.body.lastName ? (request.body.lastName) : result.lastName);
                 result.address = {
                     address: request.body.address ? (request.body.address.address) : null,
