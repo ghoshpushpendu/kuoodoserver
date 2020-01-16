@@ -788,7 +788,10 @@ var returnRouter = function (io) {
         let location = [request.body.location.longitude, request.body.location.latitude];
         let driverResponse = {};
         var data = {
-            location: location
+            location: location,
+            accuracy: request.body.accuracy,
+            heading: request.body.heading,
+            speed: request.body.speed
         }
         user.findByIdAndUpdate(_id, { $set: data }, { new: true }, function (error, res) {
             if (error) {
@@ -801,7 +804,10 @@ var returnRouter = function (io) {
                 console.log("result:" + res);
                 io.emit(_id + '-location', {
                     lat: request.body.location.longitude,
-                    lng: request.body.location.latitude
+                    lng: request.body.location.latitude,
+                    accuracy: request.body.accuracy,
+                    heading: request.body.heading,
+                    speed: request.body.speed
                 });
                 driverResponse.error = false;
                 driverResponse.location = res;
