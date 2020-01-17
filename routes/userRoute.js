@@ -18,7 +18,7 @@ const Image = require('../models/upload');
 var multer = require('multer');
 var upload = multer({ dest: 'fileUpload/' });
 const cards = require('../models/cards');
-const gm = require('gm').subClass({ imageMagick: true });
+const gm = require('gm').subClass({});
 
 // var plivo = require('plivo');
 
