@@ -743,7 +743,12 @@ var returnRouter = function (io) {
         let searchResponse = {};
         user.find({
             location: {
-                $nearSphere: coords,
+                $nearSphere: {
+                    $geometry: {
+                        type: "Point",
+                        coordinates: coords
+                    }
+                },
                 $maxDistance: 3000 // distance in meter
             },
             // status: "Activated",
