@@ -756,8 +756,9 @@ var returnRouter = function (io) {
         }).exec(function (error, result) {
             if (error) {
                 searchResponse.error = true;
+                searchResponse.driverDetails = result;
                 searchResponse.message = "No driver avaliable in this area";
-                response.status(500).json(searchResponse);
+                response.status(200).json(searchResponse);
             } else if (result) {
 
                 // result.driverDetails.map((element) => {
