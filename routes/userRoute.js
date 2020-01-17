@@ -18,6 +18,7 @@ const Image = require('../models/upload');
 var multer = require('multer');
 var upload = multer({ dest: 'fileUpload/' });
 const cards = require('../models/cards');
+const gm = require('gm').subClass({ imageMagick: true });
 
 // var plivo = require('plivo');
 
@@ -672,31 +673,84 @@ var returnRouter = function (io) {
                 response.status(500).json(imageResponse);
             }
             else if (request.file) {
-                // console.log(request);
                 image = request.file;
+                let resizedImagePath = 'uplods/thumb-' + image.filename;
+                // 
+                gm(image.path)
+                    .resize(64, 64)
+                    .write(resizedImagePath, (error, resizedImage) => {
+                        gm(resizedImagePath).identify((error, imageData) => {
 
-                let data = new Image({
-                    file: image
-                });
+                            if (error) {
+                                imageResponse.error = true;
+                                imageResponse.message = `Error :` + error.message;
+                                response.status(500).json(imageResponse);
+                            }
+                            else {
+                                if (imageData) {
+                                    // 
+                                    var resizeImage = {
+                                        mimetype: imageData['Mime type'],
+                                        size: imageData.Filesize,
+                                        path: imageData.path,
+                                    }
+                                    // 
 
-                data.save((error, result) => {
-                    if (error) {
-                        imageResponse.error = true;
-                        imageResponse.message = `Error :` + error.message;
-                        response.status(500).json(imageResponse);
-                    }
-                    else if (result) {
-                        imageResponse.error = false;
-                        imageResponse.upload = result;
-                        imageResponse.message = `file upload successful.`;
-                        response.status(200).json(imageResponse);
-                    }
-                    else {
-                        imageResponse.error = true;
-                        imageResponse.message = `file upload unsuccessful.`;
-                        response.status(500).json(imageResponse);
-                    }
-                });
+                                }
+                                let data = new Image({
+                                    thumbnail: resizeImage,
+                                    file: image
+                                });
+
+                                data.save((error, result) => {
+
+
+
+                                    if (error) {
+                                        imageResponse.error = true;
+                                        imageResponse.message = `Error :` + error.message;
+                                        response.status(500).json(imageResponse);
+                                    }
+                                    else if (result) {
+                                        imageResponse.error = false;
+                                        imageResponse.upload = result;
+                                        imageResponse.message = `file uploaded successful.`;
+                                        response.status(200).json(imageResponse);
+                                    }
+                                    else {
+                                        imageResponse.error = true;
+                                        imageResponse.message = `file upload unsuccessful.`;
+                                        response.status(500).json(imageResponse);
+                                    }
+                                });
+                            }
+                        })
+
+                    })
+                // image = request.file;
+
+                // let data = new Image({
+                //     file: image
+                // });
+
+                // data.save((error, result) => {
+                //     if (error) {
+                //         imageResponse.error = true;
+                //         imageResponse.message = `Error :` + error.message;
+                //         response.status(500).json(imageResponse);
+                //     }
+                //     else if (result) {
+                //         imageResponse.error = false;
+                //         imageResponse.upload = result;
+                //         imageResponse.message = `file upload successful.`;
+                //         response.status(200).json(imageResponse);
+                //     }
+                //     else {
+                //         imageResponse.error = true;
+                //         imageResponse.message = `file upload unsuccessful.`;
+                //         response.status(500).json(imageResponse);
+                //     }
+                // });
             }
         });
     });
@@ -714,11 +768,28 @@ var returnRouter = function (io) {
                 response.status(500).json(imageResponse);
             }
             else if (result) {
-                response.set({
-                    "Content-Disposition": 'attachment; filename="' + result.file.originalname + '"',
-                    "Content-Type": result.file.mimetype
-                });
-                fs.createReadStream(result.file.path).pipe(response);
+
+                if (select == "thumbnail") {
+                    response.set({
+                        "Content-Disposition": 'attachment; filename="' + 'uplods/thumb-' + result.file.originalname + '"',
+                        "Content-Type": result.thumbnail.mimetype
+                    });
+                    fs.createReadStream(result.thumbnail.path).pipe(response);
+                }
+                else {
+                    response.set({
+                        "Content-Disposition": 'attachment; filename="' + result.file.originalname + '"',
+                        "Content-Type": result.file.mimetype
+                    });
+                    fs.createReadStream(result.file.path).pipe(response);
+
+                }
+
+                // response.set({
+                //     "Content-Disposition": 'attachment; filename="' + result.file.originalname + '"',
+                //     "Content-Type": result.file.mimetype
+                // });
+                // fs.createReadStream(result.file.path).pipe(response);
             }
             else {
                 imageResponse.error = true;

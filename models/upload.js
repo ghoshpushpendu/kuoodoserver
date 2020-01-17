@@ -5,6 +5,9 @@ const uploadSchema = mongoose.Schema({
     file: {
         type: Object
     },
+    thumbnail: {
+        type: Object
+    },
     type: {
 
         type: String

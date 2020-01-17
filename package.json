@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
+    "authorizenet": "^1.0.7",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "cryptr": "^2.0.0",
@@ -12,6 +13,7 @@
     "fcm-push": "^1.1.3",
     "fs": "0.0.1-security",
     "geolib": "^2.0.24",
+    "gm": "^1.23.1",
     "mongoose": "^4.12.1",
     "multer": "^1.3.0",
     "nodemon": "^1.12.1",
@@ -20,8 +22,7 @@
     "plivo": "^0.4.2",
     "socket.io": "^2.1.0",
     "stripe": "^6.20.0",
-    "twilio": "^3.8.0",
-    "authorizenet": "^1.0.7"
+    "twilio": "^3.8.0"
   },
   "devDependencies": {},
   "scripts": {
