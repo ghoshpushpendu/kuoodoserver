@@ -759,6 +759,7 @@ var returnRouter = function (io) {
     */
     router.get('/fileShow', (request, response) => {
         let imageResponse = {};
+        let select = request.query.select;
         console.log("image display");
         console.log(request.query);
         Image.findById(request.query.imageId, (error, result) => {
