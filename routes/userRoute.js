@@ -674,7 +674,7 @@ var returnRouter = function (io) {
             }
             else if (request.file) {
                 image = request.file;
-                let resizedImagePath = 'uplods/thumb-' + image.filename;
+                let resizedImagePath = 'fileUpload/thumb-' + image.filename;
                 // 
                 gm(image.path)
                     .resize(64, 64)
@@ -771,7 +771,7 @@ var returnRouter = function (io) {
 
                 if (select == "thumbnail") {
                     response.set({
-                        "Content-Disposition": 'attachment; filename="' + 'uplods/thumb-' + result.file.originalname + '"',
+                        "Content-Disposition": 'attachment; filename="' + 'fileUpload/thumb-' + result.file.originalname + '"',
                         "Content-Type": result.thumbnail.mimetype
                     });
                     fs.createReadStream(result.thumbnail.path).pipe(response);
