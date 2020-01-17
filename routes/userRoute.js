@@ -754,7 +754,7 @@ var returnRouter = function (io) {
             // status: "Activated",
             location: {
                 $geoWithin: {
-                    $centerSphere: [coords, 3 / 3963.2]
+                    $centerSphere: [coords, 1.86411 / 3963.2]
                 },
             },
             availability: "Online"
