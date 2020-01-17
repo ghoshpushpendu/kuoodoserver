@@ -742,16 +742,21 @@ var returnRouter = function (io) {
         console.log(coords);
         let searchResponse = {};
         user.find({
-            location: {
-                $nearSphere: {
-                    $geometry: {
-                        type: "Point",
-                        coordinates: coords
-                    }
-                },
-                $maxDistance: 3000 // distance in meter
-            },
+            // location: {
+            //     $nearSphere: {
+            //         $geometry: {
+            //             type: "Point",
+            //             coordinates: coords
+            //         }
+            //     },
+            //     $maxDistance: 3000 // distance in meter
+            // },
             // status: "Activated",
+            location: {
+                $geoWithin: {
+                    $centerSphere: [coords, 3 / 3963.2]
+                },
+            },
             availability: "Online"
         }).exec(function (error, result) {
             if (error) {
